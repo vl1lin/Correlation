@@ -11,18 +11,30 @@ class Correlation(ABC):
                  path_y_g: Union[str, Path],
                  path_temperature: Union[str, Path],
                  path_y_api: Union[str, Path],
-                 path_r_s: Union[str, Path]) -> None:
-        self._y_g = self.load_bounds(file_path=path_y_g)
-        self._temperature = self.load_bounds(file_path=path_temperature)
-        self._y_api = self.load_bounds(file_path=path_y_api)
-        self._r_s_data = self.converting_from_dict_to_list(parameter_path=path_r_s)
+                 path_r_s: Union[str, Path],
+                 base_dir: Path = None) -> None:
+        self._base_dir = base_dir or Path.cwd()
+        self._y_g = self.load_bounds(file_path=path_y_g, base_dir=self._base_dir)
+        self._temperature = self.load_bounds(file_path=path_temperature, base_dir=self._base_dir)
+        self._y_api = self.load_bounds(file_path=path_y_api, base_dir=self._base_dir)
+        self._r_s_data = self.converting_from_dict_to_list(parameter_path=path_r_s, base_dir=self._base_dir)
         self.fig = go.Figure()
 
     @staticmethod
-    def get_data_from_json(*, file_path: Union[str, Path]) -> Dict[str, Any]:
+    def get_data_from_json(*, file_path: Union[str, Path], base_dir: Path = None) -> Dict[str, Any]:
         path = Path(file_path)
         if not path.exists():
-            raise FileNotFoundError(f"Файл не найден: {path}")
+            if base_dir:
+                data_folder = base_dir / "data"
+                alt_path = data_folder / path.name
+
+                if alt_path.exists():
+                    path = alt_path
+                else:
+                    raise FileNotFoundError(f"Файл не найден: '{file_path}'.Также проверено в '{data_folder}', но там нет файла '{path.name}'")
+            else:
+                raise FileNotFoundError(f"Файл не найден: {path} и базовая директория не указана.")
+
         try:
             with path.open("r", encoding='utf-8') as f:
                 data = json.load(f)
@@ -31,13 +43,13 @@ class Correlation(ABC):
         return data
 
     @staticmethod
-    def converting_from_dict_to_list(*, parameter_path: Union[str, Path]) -> np.ndarray:
-        data_list = Correlation.get_data_from_json(file_path=parameter_path)["values"]
+    def converting_from_dict_to_list(*, parameter_path: Union[str, Path], base_dir: Path = None) -> np.ndarray:
+        data_list = Correlation.get_data_from_json(file_path=parameter_path, base_dir=base_dir)["values"]
         return np.array(data_list)
 
     @staticmethod
-    def load_bounds(*, file_path: Union[str, Path]) -> tuple:
-        data = Correlation.get_data_from_json(file_path=file_path)
+    def load_bounds(*, file_path: Union[str, Path], base_dir: Path = None) -> tuple:
+        data = Correlation.get_data_from_json(file_path=file_path, base_dir=base_dir)
         data_tuple = (data["lower_bound"], data["upper_bound"])
         return data_tuple
 

@@ -1,6 +1,7 @@
 import argparse
 import sys
 from models.Standing import Standing
+from pathlib import Path
 
 
 def main():
@@ -24,11 +25,13 @@ def main():
 
     try:
         if args.correlation == "standing":
+            base_dir = Path(__file__).parent.resolve()
             model = Standing(
                 path_y_g=args.y_g,
                 path_temperature=args.temp,
                 path_y_api=args.api,
-                path_r_s=args.rs
+                path_r_s=args.rs,
+                base_dir=base_dir
             )
 
             df = model.filtration_data_p_b()
