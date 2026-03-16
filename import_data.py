@@ -41,6 +41,7 @@ class CsvStrategy(FileStrategy):
 class TxtStrategy(FileStrategy):
     def __init__(self, *, delimetr: str = '\\t'):
         self.delimiter = delimetr
+
     def read(self, *, file_path: Union[str, Path]) -> pd.DataFrame:
         return pd.read_csv(file_path, sep=self.delimiter, header=None, names=["col_1", "col_2"])
 
@@ -48,4 +49,5 @@ class TxtStrategy(FileStrategy):
         data.to_csv(file_path_to_write, sep=self.delimiter, index=False, header=False)
 
 
-
+class DataProcessor:
+    pass
