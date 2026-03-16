@@ -3,21 +3,17 @@ import numpy as np
 import pandas as pd
 import random
 from abc import ABC, abstractmethod
-from typing import Dict, Optional, Any
+from typing import Dict, Optional, Any, Union
+from pathlib import Path
 
-class DataTransport:
 
-
-    def get_data_from_json(self):
+class FileStrategy(ABC):
+    def read(self, *, file_path: Union[str, Path]) -> None:
         pass
 
-    def get_data_from_csv(self):
+    def write(self, *, data: pd.DataFrame, file_path_to_write: Union[Path, str]) -> None:
         pass
 
-    def create_random_data(self):
-        pass
 
-    def import_created_data(self):
-        pass
-
-    def get_data_from
+class JsonStrategy(FileStrategy):
+    pass
