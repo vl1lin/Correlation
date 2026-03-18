@@ -89,3 +89,20 @@ class DataProcessor:
         print(f"Сгенерировано {rows} строк случайных данных")
         return self._data
 
+    def export_data(self, *, target_class_instance: Any, method_name: str) -> None:
+        if self._data is None:
+            raise ValueError("Нет данных для экспорта")
+
+        if not hasattr(target_class_instance, method_name):
+            raise AttributeError(f"У целевого объекта нет атрибута {method_name}")
+
+        getattr(target_class_instance, method_name)(self._data)
+        print(f"Данные экспортированы в {type(target_class_instance).__name__}")
+
+    def save_file(self, *, file_path: Union[str, Path]) -> None:
+        if self._data is None:
+            raise ValueError("Нет данных для сохранения")
+
+        strategy = self._get_strategy(file_path=file_path)
+        strategy.write(data=self._data, file_path_to_write=file_path)
+        print(f"Данные сохранены в файл {file_path}")
