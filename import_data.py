@@ -75,3 +75,17 @@ class DataProcessor:
             raise ValueError("Сначала загрузите данные")
         else:
             self._data = func(self._data)
+
+    def generate_random_data(self, *, rows: int = 100, columns: list = None) -> pd.DataFrame:
+        if columns is None:
+            columns = ["id", "value", "category"]
+
+        data = {
+            "id": range(rows),
+            "value": [random.uniform(0, 100) for _ in range(rows)],
+            "category": [random.choice(['A', 'B', 'C']) for _ in range(rows)]
+        }
+        self._data = pd.DataFrame(data)
+        print(f"Сгенерировано {rows} строк случайных данных")
+        return self._data
+
