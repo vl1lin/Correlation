@@ -1,7 +1,7 @@
 import argparse
 import sys
 from pathlib import Path
-from models.Standing import Standing
+from factory import CorrelationFactory
 
 
 def main():
@@ -29,40 +29,40 @@ def main():
     args = parser.parse_args()
 
     try:
-        if args.correlation == "standing":
-            base_dir = Path(args.data_dir) if args.data_dir else None
+        base_dir = Path(args.data_dir) if args.data_dir else None
 
-            model = Standing(
-                path_y_g=args.y_g,
-                path_temperature=args.temp,
-                path_y_api=args.api,
-                path_r_s=args.rs,
-                base_dir=base_dir
-            )
+        model = CorrelationFactory.create(
+            name=args.correlation,
+            path_y_g=args.y_g,
+            path_temperature=args.temp,
+            path_y_api=args.api,
+            path_r_s=args.rs,
+            base_dir=base_dir
+        )
 
-            df = model.filtration_data_p_b()
+        df = model.filtration_data_p_b()
 
-            if df.empty:
-                print("Ошибка: После фильтрации не осталось данных (P_b <= 0). "
-                      "Проверьте входные параметры.")
-                sys.exit(1)
+        if df.empty:
+            print("Ошибка: После фильтрации не осталось данных (P_b <= 0). "
+                  "Проверьте входные параметры.")
+            sys.exit(1)
 
-            print(f"Рассчитано {len(df)} точек данных.")
+        print(f"Рассчитано {len(df)} точек данных.")
 
-            show_browser = not args.no_show
+        show_browser = not args.no_show
 
-            model.making_simple_plot(
-                data_r_s=df["R_s"].tolist(),
-                data_p_b=df["P_b"].tolist(),
-                show=show_browser
-            )
+        model.making_simple_plot(
+            data_r_s=df["R_s"].tolist(),
+            data_p_b=df["P_b"].tolist(),
+            show=show_browser
+        )
 
-            if args.no_show or args.output:
-                model.download_plot_to_html(filename=args.output)
+        if args.no_show or args.output:
+            model.download_plot_to_html(filename=args.output)
 
-            if args.save_csv:
-                model.save_results_to_csv(file_path=args.save_csv)
-                print(f"Данные сохранены в CSV: {args.save_csv}")
+        if args.save_csv:
+            model.save_results_to_csv(file_path=args.save_csv)
+            print(f"Данные сохранены в CSV: {args.save_csv}")
 
         else:
             print(f"Корреляция '{args.correlation}' пока не реализована.")
