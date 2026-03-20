@@ -36,6 +36,10 @@ class Correlation(ABC):
     def data_correlation(self) -> pd.DataFrame:
         pass
 
+    @abstractmethod
+    def filtration_data_p_b(self) -> pd.DataFrame:
+        pass
+
     def making_simple_plot(self, *,
                            data_r_s: list,
                            data_p_b: list,
