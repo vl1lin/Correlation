@@ -1,31 +1,37 @@
 import argparse
 import sys
-from models.Standing import Standing
 from pathlib import Path
+from models.Standing import Standing
 
 
 def main():
     parser = argparse.ArgumentParser(description="Генератор графиков корреляций свойств нефти")
-
-    parser.add_argument("--correlation", type=str, required=True, choices=["standing"],
+    parser.add_argument("--correlation", type=str, required=True,
+                        choices=["standing"],
                         help="Тип корреляции (пока доступен только 'standing')")
-    parser.add_argument("--y-g", type=str, required=True, help="Путь к JSON с границами удельного веса газа")
-    parser.add_argument("--temp", type=str, required=True, help="Путь к JSON с границами температуры")
-    parser.add_argument("--api", type=str, required=True, help="Путь к JSON с границами API gravity")
-    parser.add_argument("--rs", type=str, required=True, help="Путь к JSON с данными Rs")
-
+    parser.add_argument("--y-g", type=str, required=True,
+                        help="Имя файла JSON с границами удельного веса газа")
+    parser.add_argument("--temp", type=str, required=True,
+                        help="Имя файла JSON с границами температуры")
+    parser.add_argument("--api", type=str, required=True,
+                        help="Имя файла JSON с границами API gravity")
+    parser.add_argument("--rs", type=str, required=True,
+                        help="Имя файла JSON с данными Rs")
     parser.add_argument("--output", type=str, default=None,
                         help="Имя выходного HTML файла")
     parser.add_argument("--no-show", action="store_true",
                         help="Не открывать браузер автоматически")
     parser.add_argument("--save-csv", type=str, default=None,
                         help="Сохранить отфильтрованные данные в CSV файл")
+    parser.add_argument("--data-dir", type=str, default=None,
+                        help="Директория с данными (по умолчанию ./data)")
 
     args = parser.parse_args()
 
     try:
         if args.correlation == "standing":
-            base_dir = Path(__file__).parent.resolve()
+            base_dir = Path(args.data_dir) if args.data_dir else None
+
             model = Standing(
                 path_y_g=args.y_g,
                 path_temperature=args.temp,
@@ -37,7 +43,8 @@ def main():
             df = model.filtration_data_p_b()
 
             if df.empty:
-                print("Ошибка: После фильтрации не осталось данных (P_b <= 0). Проверьте входные параметры.")
+                print("Ошибка: После фильтрации не осталось данных (P_b <= 0). "
+                      "Проверьте входные параметры.")
                 sys.exit(1)
 
             print(f"Рассчитано {len(df)} точек данных.")
@@ -54,7 +61,7 @@ def main():
                 model.download_plot_to_html(filename=args.output)
 
             if args.save_csv:
-                df.to_csv(args.save_csv, index=False)
+                model.save_results_to_csv(file_path=args.save_csv)
                 print(f"Данные сохранены в CSV: {args.save_csv}")
 
         else:

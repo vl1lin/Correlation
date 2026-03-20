@@ -1,4 +1,4 @@
-from .core import Correlation
+from Correlation_mini_app.core import Correlation
 import random
 import numpy as np
 import pandas as pd
@@ -35,9 +35,9 @@ class Standing(Correlation):
         return p_b_data
 
     def filtration_data_p_b(self) -> pd.DataFrame:
-        pb = self.data_correlation()
+        pb = self.data_correlation().flatten()
         data = pd.DataFrame({
-            "R_s": self._r_s_data,
+            "R_s": np.array(self._r_s_data).flatten(),
             "P_b": pb
         })
         valid_data = data[data["P_b"] > 0].copy()
