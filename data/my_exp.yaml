@@ -1,0 +1,9 @@
+experiment_name: "Тест Standing 1"
+model: standing
+inputs:
+  y_g: data/y_g.json
+  temperature: data/temperature.json
+  api_gravity: data/api.json
+  rs: data/rs.json
+output:
+  show_browser: true

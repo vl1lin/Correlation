@@ -67,27 +67,23 @@ def run_application(config: AppConfig):
 
 def main():
     parser = argparse.ArgumentParser(description="Генератор графиков корреляций свойств нефти")
+    # 1. Флаг конфига (всегда опционален для парсера)
     parser.add_argument("--config", type=str,
-                        help="Путь к YAML файлу конфигурации (приоритет над другими флагами)")
-    parser.add_argument("--correlation", type=str, required=True,
-                        choices=["standing"],
-                        help="Тип корреляции (пока доступен только 'standing')")
-    parser.add_argument("--y-g", type=str, required=True,
-                        help="Имя файла JSON с границами удельного веса газа")
-    parser.add_argument("--temp", type=str, required=True,
-                        help="Имя файла JSON с границами температуры")
-    parser.add_argument("--api", type=str, required=True,
-                        help="Имя файла JSON с границами API gravity")
-    parser.add_argument("--rs", type=str, required=True,
-                        help="Имя файла JSON с данными Rs")
-    parser.add_argument("--output", type=str, default=None,
-                        help="Имя выходного HTML файла")
-    parser.add_argument("--no-show", action="store_true",
-                        help="Не открывать браузер автоматически")
-    parser.add_argument("--save-csv", type=str, default=None,
-                        help="Сохранить отфильтрованные данные в CSV файл")
-    parser.add_argument("--data-dir", type=str, default=None,
-                        help="Директория с данными (по умолчанию ./data)")
+                        help="Путь к YAML файлу конфигурации. Если указан, остальные флаги игнорируются.")
+
+    # 2. Ручные флаги (ТОЖЕ опциональны для парсера, required убираем!)
+    parser.add_argument("--correlation", type=str, choices=["standing"],
+                        help="Тип корреляции")
+    parser.add_argument("--y-g", type=str, help="Путь к JSON y_g")
+    parser.add_argument("--temp", type=str, help="Путь к JSON температуры")
+    parser.add_argument("--api", type=str, help="Путь к JSON API")
+    parser.add_argument("--rs", type=str, help="Путь к JSON Rs")
+
+    # Опции вывода
+    parser.add_argument("--output", type=str, default=None, help="Имя выходного HTML файла")
+    parser.add_argument("--no-show", action="store_true", help="Не открывать браузер")
+    parser.add_argument("--save-csv", type=str, default=None, help="Сохранить в CSV")
+    parser.add_argument("--data-dir", type=str, default=None, help="Базовая директория данных")
 
     args = parser.parse_args()
 
