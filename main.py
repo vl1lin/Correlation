@@ -7,8 +7,8 @@ from config_loader import InputPaths, OutputConfig, AppConfig
 
 def run_application(config: AppConfig):
 
-    print(f"🚀 Запуск эксперимента: {config.experiment_name}")
-    print(f"📊 Модель: {config.model}")
+    print(f"Запуск эксперимента: {config.experiment_name}")
+    print(f"Модель: {config.model}")
 
     try:
         # 1. Создание модели через Фабрику
@@ -29,10 +29,10 @@ def run_application(config: AppConfig):
         df = model.filtration_data_p_b()
 
         if df.empty:
-            print("⚠️ Ошибка: После фильтрации не осталось данных (P_b <= 0).")
+            print("Ошибка: После фильтрации не осталось данных (P_b <= 0).")
             sys.exit(1)
 
-        print(f"✅ Рассчитано {len(df)} точек данных.")
+        print(f"Рассчитано {len(df)} точек данных.")
 
         # 3. Построение графика
         show_browser = config.output.show_browser
@@ -48,7 +48,7 @@ def run_application(config: AppConfig):
         if config.output.plot_file:
             Path(config.output.plot_file).parent.mkdir(parents=True, exist_ok=True)
             model.download_plot_to_html(filename=config.output.plot_file)
-            print(f"💾 График сохранен: {config.output.plot_file}")
+            print(f"График сохранен: {config.output.plot_file}")
 
         if config.output.csv_file:
             Path(config.output.csv_file).parent.mkdir(parents=True, exist_ok=True)

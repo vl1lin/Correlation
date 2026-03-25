@@ -49,7 +49,6 @@ class TxtStrategy(FileStrategy):
 
 class DataProcessor:
     def __init__(self, *, base_dir: Optional[Path] = None):
-        self._data: Optional[pd.DataFrame] = None
         self._base_dir = base_dir or Path(__file__).resolve().parent / "data"
 
         self._strategies: Dict[str, FileStrategy] = {
@@ -89,9 +88,7 @@ class DataProcessor:
     def load_file(self, *, file_name: Union[str, Path]) -> pd.DataFrame:
         full_path = self._get_file_path(file_name=file_name)
         strategy = self._get_strategy(file_path=full_path)
-        self._data = strategy.read(file_path=full_path)
-        print(f"Данные успешно загружены из {full_path}")
-        return self._data
+        return strategy.read(file_path=full_path)
 
     def get_column(self, *, column_name: str) -> list:
         if self._data is None:
