@@ -1,8 +1,8 @@
 import argparse
 import sys
 from pathlib import Path
-from factory import CorrelationFactory
-from config_loader import InputPaths, OutputConfig, AppConfig
+from Correlation_mini_app.technical_files.factory import CorrelationFactory
+from Correlation_mini_app.terminal_loader.config_loader import InputPaths, OutputConfig, AppConfig
 
 
 def run_application(config: AppConfig):

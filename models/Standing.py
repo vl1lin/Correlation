@@ -1,4 +1,4 @@
-from Correlation_mini_app.core import Correlation
+from Correlation_mini_app.models.core import Correlation
 import random
 import numpy as np
 import pandas as pd

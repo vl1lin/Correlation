@@ -3,7 +3,7 @@ import plotly.graph_objects as go
 from pathlib import Path
 from typing import Union, Optional
 from abc import ABC, abstractmethod
-from import_data import DataProcessor
+from Correlation_mini_app.sources.import_data import DataProcessor
 
 
 class Correlation(ABC):
