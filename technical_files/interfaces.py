@@ -1,11 +1,12 @@
 from abc import ABC, abstractmethod
 from typing import Any
+import pandas as pd
 
 
 class DataSources(ABC):
     """Стратегия получения данных"""
     @abstractmethod
-    def fetch(self) -> Any:
+    def fetch(self) -> pd.DataFrame:
         pass
 
 
